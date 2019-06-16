@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}CampusHunt-我的简历{% endblock %}
+
+{% block page_content %}
+<div class="col-md-4">
+	{{ wtf.quick_form(form) }}
+</div><br><br>
+
+{% if resume.document %}
+	<p>已上传的简历：</p>
+	<embed src="{{ url_for('static', filename='documents/') }}{{ resume.student_id }}.pdf?q={{ range(1, 51) | random }}" width="500" height="375" 
+ type="application/pdf"> {# 使用随机数生成请求以防止浏览器读取缓存文件 #}
+{% endif %}
+{% endblock %}

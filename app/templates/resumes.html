@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block page_content %}
+<table class="table table-data-center">
+	<thead>
+		<tr>
+			<th>姓名</th>
+			<th>介绍</th>
+			<th>简历</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for row in rows %}
+		<tr>
+			<td>{{row.name}}</td>
+			<td>{{row.desc}}</td>
+			<td><a href="{{ url_for('main.view_resume', resume_id=row.resume_id) }}">查看</a></td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
+{% endblock %}

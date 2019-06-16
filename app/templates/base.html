@@ -1,0 +1,138 @@
+{% extends "bootstrap/base.html" %}
+
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" type="text/css" href="{{ url_for ('static', filename='css/style.css') }}">
+{% endblock %}
+
+{% block title %}CampusHunt{% endblock %}
+
+{% block navbar %}
+<nav class="navbar navbar-inverse" style="border-radius: 0">
+	<a class="navbar-brand" href="{{ url_for('main.index') }}">CampusHunt</a>
+	<div class="collapse navbar-collapse" id="navbarTogglerItems">
+		<div class="container-fluid">
+
+			{% if not current_user.is_authenticated %} {# 游客 #}
+			<ul class="navbar-nav nav">
+				<p class="navbar-text navbar-left">游客 ;)</p>
+			</ul>
+			<ul class="navbar-nav nav navbar-right">
+				<li class="nav-item">
+					<a class="nav-link" href="#">导师项目</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="{{ url_for('auth.login') }}">登录</a>
+				</li>
+			</ul>
+
+			{% elif current_user.user_role == 1 %} {# 学生 #}
+			<ul class="navbar-nav nav">
+				<p class="navbar-text navbar-left">{{ current_user.username }}同学 ;)</p>
+			</ul>
+			<ul class="navbar-nav nav navbar-right">
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" id="myprojects-student" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						我的项目
+						<span class="caret"></span>
+					</a>
+					<ul class="dropdown-menu" aria-labelledby="myprojects-student">
+						<li><a class="dropdown-item" href="{{ url_for('student.myprojects') }}">全部</a></li>
+						<li role="separator" class="divider"></li>
+						<li><a class="dropdown-item" href="{{ url_for('student.applying') }}">投递项目</a></li>
+						<li><a class="dropdown-item" href="{{ url_for('student.applied') }}">签约项目</a></li>
+						<li><a class="dropdown-item" href="{{ url_for('student.completions') }}">已完结</a></li>
+					</ul>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="{{ url_for('student.myresume') }}">我的简历</a>
+				</li>
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" id="account-student" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						账户
+						<span class="caret"></span>
+					</a>
+					<ul class="dropdown-menu" aria-labelledby="account-student">
+						<li><a class="dropdown-item" href="{{ url_for('auth.change_password') }}">更改密码</a></li>
+						<li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">注销</a></li>
+					</ul>
+				</li>
+			</ul>
+
+			{% elif current_user.user_role == 2 %} {# 导师 #}
+			<ul class="navbar-nav nav">
+				<p class="navbar-text navbar-left">{{ current_user.username }}老师 ;)</p>
+			</ul>
+			<ul class="navbar-nav nav navbar-right">
+				<li class="nav-item">
+					<a class="nav-link" href="{{ url_for('mentor.resumes') }}">学生简历</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="{{ url_for('mentor.launch') }}">发布项目</a>
+				</li>
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" id="myprojects-mentor" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						我的项目
+						<span class="caret"></span>
+					</a>
+					<ul class="dropdown-menu" aria-labelledby="myprojects-mentor">
+						<li><a class="dropdown-item" href="{{ url_for('mentor.get_projects_for', mentor_id=current_user.user_id) }}">全部</a></li>
+						<li role="separator" class="divider"></li>
+						<li><a class="dropdown-item" href="{{ url_for('mentor.get_projects_for', mentor_id=current_user.user_id, status=1) }}">招募中</a></li>
+						<li><a class="dropdown-item" href="{{ url_for('mentor.get_projects_for', mentor_id=current_user.user_id, status=2) }}">等待交付</a></li>
+						<li><a class="dropdown-item" href="{{ url_for('mentor.get_projects_for', mentor_id=current_user.user_id, status=3) }}">已完成</a></li>
+					</ul>
+				</li>
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" id="account-mentor" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						账户
+						<span class="caret"></span>
+					</a>
+					<ul class="dropdown-menu" aria-labelledby="account-mentor">
+						<li><a class="dropdown-item" href="{{ url_for('auth.change_password') }}">更改密码</a></li>
+						<li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">注销</a></li>
+					</ul>
+				</li>
+			</ul>
+
+			{% elif current_user.user_role == 3 %} {# 管理员 #}
+			<ul class="navbar-nav nav">
+				<p class="navbar-text navbar-left">{{ current_user.username }}管理员 ;)</p>
+			</ul>
+			<ul class="navbar-nav nav navbar-right">
+				<li class="nav-item">
+					<a class="nav-link" href="#">学生管理</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="#">教师管理</a>
+				</li>
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" id="account-admin" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						账户
+						<span class="caret"></span>
+					</a>
+					<ul class="dropdown-menu" aria-labelledby="account-admin">
+						<li><a class="dropdown-item" href="{{ url_for('auth.change_password') }}">更改密码</a></li>
+						<li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">注销</a></li>
+					</ul>
+				</li>
+			</ul>
+			{% endif %}
+
+		</div>
+	</div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+	{% for message in get_flashed_messages() %}
+	<div class="alert alert-warning">
+		<button type="button" class="close" data-dismiss="alert">&times;</button>
+		{{ message }}
+	</div>
+	{% endfor %}
+
+	{% block page_content %} {% endblock %} <!-- 继承该模版的子模版中的内容要写在这个 block 里，也就是说子模版中写到 block 之外的内容不会在页面中显示出来 -->
+</div>
+{% endblock %}

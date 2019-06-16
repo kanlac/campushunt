@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block page_content %}
+{% if resume %}
+ 	<embed src="{{ url_for('static', filename='documents/') }}{{ resume.student_id }}.pdf" width="500" height="375" 
+ type="application/pdf">
+{% else %}
+	<h3>还未上传简历。</h3>
+{% endif %}
+{% endblock %}

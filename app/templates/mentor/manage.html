@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block head %}
+{{ super() }}
+<style type="text/css">
+	.table-data-center th, td {
+		text-align: center;
+	}
+</style>
+{% endblock %}
+
+{% block title %}CampusHunt-管理{% endblock %}
+
+{% block page_content %}
+<h1>管理申请</h1><br>
+
+{% if not rows %}
+	当前还没有申请参与的学生。
+{% else %}
+	<table class="table table-data-center">
+		<thead>
+			<tr>
+				<th>学生姓名</th>
+				<th>简介</th>
+				<th>简历</th>
+				<th>标记状态</th>
+				<th>操作</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for row in rows %}
+			<tr>
+				<td>{{ row.username }}</td>
+				<td>{{ row.desc }}</td>
+				<td><a href="{{ url_for('mentor.view_resume', student_id=row.student_id) }}">查看</a></td>
+				<td>
+					{% if row.status == 1 %}
+						未回应
+					{% elif row.status == 2 %}
+						已招募
+					{% elif row.status == 3 %}
+						已拒绝
+					{% endif %}
+				</td>
+				<td>
+					<a href="{{ url_for('mentor.respond', project_id=row.project_id, application_id=row.application_id, value=2) }}">通过</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					<a href="{{ url_for('mentor.respond', project_id=row.project_id, application_id=row.application_id, value=3) }}">拒绝</a>
+				</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+{% endif %}
+{% endblock %}
+
+
+{% block scripts %}
+{# 导入 jQuery 库 #}
+<script type="text/javascript" src="{{ url_for('static', filename='jquery.js') }}"></script>
+<script type="text/javascript">
+	
+</script>
+{% endblock %}

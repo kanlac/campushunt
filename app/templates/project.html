@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}CampusHunt-{{ project.title }}{% endblock %}
+
+{% block page_content %}
+<h1>{{ project.title }}</h1><br>
+<p>
+	导师：{{ mentor.username }} | 
+	{% if project.status == 1 %}
+		招募中
+		{% if mentor == current_user %}
+			<a href="{{ url_for('mentor.markas', project_id=project.project_id, mark=2) }}">中止招募</a>
+		{% endif %}
+	{% elif project.status == 2 %}
+		招募结束
+		{% if mentor == current_user %}
+			<a href="{{ url_for('mentor.markas', project_id=project.project_id, mark=1) }}">重新开始招募</a> 
+			<a href="{{ url_for('mentor.markas', project_id=project.project_id, mark=3) }}">标记完结</a>
+		{% endif %}
+	{% elif project.status == 3 %}
+		已完结
+		{% if mentor == current_user %}
+			<a href="{{ url_for('mentor.markas', project_id=project.project_id, mark=2) }}">重启项目</a>
+		{% endif %}
+	{% endif %}
+	{% if apply_status %} {# 若当前用户为学生且向该项目提交过申请 #}
+		{% if apply_status == 1 %}
+			| 已向该项目提交申请
+		{% elif apply_status == 2 %}
+			| 我是该项目成员
+		{% elif apply_status == 3 %}
+			| 该项目申请未通过
+		{% endif %}
+	{% endif %}
+</p><br>
+<pre>{{ project.desc }}</pre>
+
+{% if current_user.user_role == 1 %} {# 当前用户为学生时可进行的操作 #}
+	{% if not apply_status and project.status == 1 %}
+		<a href="{{ url_for('student.apply', project_id=project.project_id) }}">申请该项目</a>
+	{% elif apply_status == 1 or apply_status == 3 %}
+		<a href="{{ url_for('student.cancel_apply', project_id=project.project_id) }}">取消该项目申请</a>
+	{% endif %}
+{% elif current_user == mentor and project.status == 1 %}
+	<a href="{{ url_for('mentor.manage', project_id=project.project_id) }}">管理该项目申请</a>
+{% endif %}
+{% endblock %}

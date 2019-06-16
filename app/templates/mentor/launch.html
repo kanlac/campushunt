@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block title %}CampusHunt-发起项目{% endblock %}
+
+{% block page_content %}
+<div class="page-header">
+	<h1>发起项目</h1> 
+</div>
+<div class="col-md-4">
+	{{ wtf.quick_form(form) }}
+</div>
+{% endblock %}

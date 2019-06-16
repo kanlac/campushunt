@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block page_content %}
+{% if projects %}
+	<h1>List of Projects</h1><br>
+	{% for p in projects %}
+	<h3><a href="{{ url_for('main.project', project_id=p.project_id) }}">{{ p.title }}</a></h3>
+	<p>{{ p.desc }}</p><br>
+	{% endfor %}
+{% else %}
+	<h3>No content to be shown.</h3>
+{% endif %}
+{% endblock %}
