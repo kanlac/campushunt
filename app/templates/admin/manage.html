@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block head %}
+{{ super() }}
+<style type="text/css">
+	.table-data-center th, td {
+		text-align: center;
+	}
+</style>
+{% endblock %}
+
+{% block title %}
+	CampusHunt-
+	{% if role == 1 %}
+		学生管理
+	{% else %}
+		教师管理
+	{% endif %}
+{% endblock %}
+
+{% block page_content %}
+{% if role == 1 %}
+	<h1>学生管理</h1><br>
+{% else %}
+	<h1>教师管理</h1><br>
+{% endif %}
+
+<table class="table table-data-center">
+	<thead>
+		<tr>
+			<th>ID</th>
+			<th>姓名</th>
+			<th>操作</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for user in users %}
+		<tr>
+			<td>{{ user.user_id }}</td>
+			<td>{{ user.username }}</td>
+			<td><a href="{{ url_for('admin.remove', user_id=user.user_id) }}">删除</a></td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
+{% endblock %}

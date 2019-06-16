@@ -35,8 +35,8 @@
 </p><br>
 <pre>{{ project.desc }}</pre>
 
-{% if current_user.user_role == 1 %} {# 当前用户为学生时可进行的操作 #}
-	{% if not apply_status and project.status == 1 %}
+{% if current_user.is_authenticated and current_user.user_role == 1 %} {# 当前用户为学生时可进行的操作 #}
+	{% if apply_status is none and project.status == 1 %}
 		<a href="{{ url_for('student.apply', project_id=project.project_id) }}">申请该项目</a>
 	{% elif apply_status == 1 or apply_status == 3 %}
 		<a href="{{ url_for('student.cancel_apply', project_id=project.project_id) }}">取消该项目申请</a>

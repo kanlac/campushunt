@@ -1,4 +1,4 @@
-from flask import render_template, flash, url_for, session, redirect, request, jsonify, current_app as app, send_from_directory
+from flask import render_template, flash, url_for, session, redirect, request, current_app as app, send_from_directory
 from flask_login import login_required, current_user
 
 from . import main
@@ -20,11 +20,12 @@ def project(project_id):
 	mentor = User.query.filter_by(user_id=project.mentor_id).one()
 
 	apply_status = None
-	if current_user.user_role == 1:
-		application = Application.query.filter_by(student_id=current_user.user_id).first()
+	if current_user.is_authenticated and current_user.user_role == 1:
+		application = Application.query.filter_by(student_id=current_user.user_id, project_id=project_id).first()
 		if application is not None:
 			apply_status = application.status
 
+	print(f'apply_status: {apply_status}')
 	return render_template('project.html', project=project, mentor=mentor, apply_status=apply_status)
 
 

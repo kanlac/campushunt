@@ -28,6 +28,8 @@ def create_app(config_name):
 	app.register_blueprint(mentor_blueprint)
 	from .student import student as student_blueprint
 	app.register_blueprint(student_blueprint)
+	from .admin import admin as admin_blueprint
+	app.register_blueprint(admin_blueprint)
 	from .main.errors import page_not_found, internal_server_error
 	app.register_error_handler(404, page_not_found)
 	app.register_error_handler(500, internal_server_error)

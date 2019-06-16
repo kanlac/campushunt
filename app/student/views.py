@@ -56,13 +56,24 @@ def apply(project_id):
 	resume = Resume.query.get(current_user.user_id)
 	if resume is None or not resume.document:
 		flash('请先提交简历再进行申请！')
-	elif Application.query.filter_by(student_id=current_user.user_id).first() is not None:
-		flash('不能同时作多份申请，请先取消其他申请再来。')
 	else:
-		application = Application(student_id=current_user.user_id, project_id=project_id, status=1)
-		db.session.add(application)
-		db.session.commit()
-		flash('成功提交申请！')
+		applying = Application.query.filter(and_(Application.student_id==current_user.user_id, Application.status==1)).first()
+		signed_applications = Application.query.filter(and_(Application.student_id==current_user.user_id, Application.status==2)).all()
+		signed_projects = None
+		if signed_applications is not None:
+			signed_projects = Project.query.filter(Project.project_id.in_([i.project_id for i in signed_applications]))
+		
+		enrolled = False # 有申请通过的未结束的项目
+		if signed_projects is not None and [1, 2] in [p.status for p in signed_projects]:
+			enrolled = True
+
+		if applying is not None or enrolled:
+			flash('不能同时作多份申请，请先取消其他申请再来。')
+		else:
+			application = Application(student_id=current_user.user_id, project_id=project_id, status=1)
+			db.session.add(application)
+			db.session.commit()
+			flash('成功提交申请！')
 
 	return redirect(url_for('main.project', project_id=project_id))
 
@@ -100,7 +111,6 @@ def applied():
 		return redirect('main.index')
 
 	applied_list = Application.query.filter_by(student_id=current_user.user_id, status=2).all()
-	print(f'applied_list: {applied_list}')
 	if applied_list is not None:
 		# 通过了申请的项目中，未完结的项目（status = 1 or 2）至多有一个
 		project = Project.query.filter(and_(Project.project_id.in_([i.project_id for i in applied_list]), or_(Project.status == 1, Project.status == 2))).one_or_none()
